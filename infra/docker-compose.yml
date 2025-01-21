@@ -1,0 +1,20 @@
+services:
+  # This defines the services (containers) that Docker Compose will manage.
+  terraform:
+    # This is the name of your service.
+    image: hashicorp/terraform:1.6.2
+    # This specifies the Docker image to use for the container.
+    volumes:
+      # Volumes map files or directories on your host machine to the container.This allows you to share configuration or initialization files (e.g., .tf files, scripts) with the container.
+      - ./setup:/tf/setup
+      - ./deploy:/tf/deploy
+    working_dir: /tf
+    # Any commands run inside the container will default to this directory, making it easier to organize files and simplify workflows.
+    environment:
+      # Terraform needs these credentials to authenticate with AWS. ${} pulls the value from your host machine’s environment variables.
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - AWS_DEFAULT_REGION=us-east-1
+      - TF_WORKSPACE=${TF_WORKSPACE}
+      # Workspaces allow you to manage multiple environments (e.g., dev, staging, production) with the same Terraform code.
